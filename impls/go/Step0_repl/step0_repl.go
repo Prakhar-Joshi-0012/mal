@@ -1,10 +1,11 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"io"
 	"os"
+
+	"github.com/essentialkaos/go-linenoise/v3"
 )
 
 func READ(s string) string {
@@ -26,18 +27,16 @@ func REP(s string) string {
 }
 
 func main() {
-	in := os.Stdin
 	out := os.Stdout
-
-	scanner := bufio.NewScanner(in)
 	for {
-		fmt.Printf(PROMPT)
-		scanned := scanner.Scan()
-		if !scanned {
+		input, err := linenoise.Line(PROMPT)
+		if err != nil {
+			fmt.Printf("Error: %v\n", err)
 			return
 		}
-		repo := REP(scanner.Text())
+		repo := REP(input)
 		io.WriteString(out, repo)
 		io.WriteString(out, "\n")
+		linenoise.AddHistory(repo)
 	}
 }
