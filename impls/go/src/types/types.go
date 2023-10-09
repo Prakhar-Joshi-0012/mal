@@ -35,6 +35,18 @@ type MalHash struct {
 	Meta MalType
 }
 
+// Helper Function
+func GetSlice(seq MalType) ([]MalType, error) {
+	switch seq.(type) {
+	case MalList:
+		return seq.(MalList).Val, nil
+	case MalVector:
+		return seq.(MalVector).Val, nil
+	default:
+		return nil, errors.New("GetSlice called on non sequence")
+	}
+}
+
 func NewKeyword(s string) (MalType, error) {
 	return "\u029e" + s, nil
 }
@@ -62,4 +74,11 @@ func NewHashMap(seq MalType) (MalType, error) {
 	}
 	return MalHash{Val: m, Meta: nil}, nil
 
+}
+
+// Env
+type MalEnv interface {
+	Find(key Malsymbols) MalEnv
+	Set(key Malsymbols, val MalType) MalType
+	Get(key Malsymbols) (MalType, error)
 }
