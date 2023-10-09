@@ -179,6 +179,8 @@ func read_atom(rdr Reader) (MalType, error) {
 		str = strings.Replace(str, "\u029e", `\\`, -1)
 		return str, nil
 
+	} else if (*token)[0] == ':' {
+		return NewKeyword((*token)[1:len(*token)])
 	} else if (*token)[0] == '"' {
 		return nil, errors.New("expected '\"', got EOF")
 	} else if *token == "nil" {
@@ -205,5 +207,5 @@ func read_hash(rdr Reader) (MalType, error) {
 	if e != nil {
 		return nil, e
 	}
-	return MalHash{Val: lst.(MalList).Val, Meta: nil}, nil
+	return NewHashMap(lst)
 }
